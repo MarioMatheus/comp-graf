@@ -1,0 +1,233 @@
+clear;
+clc;
+
+% INSTANCIANDO OS OBJETOS DO ESPAÇO #######################################
+esferaUm = Esfera;
+esferaUm.cor = 100;
+esferaUm.raio = 1;
+esferaUm.centro = [0 0 0];
+
+esferaDois = Esfera;
+esferaDois.cor = 200;
+esferaDois.raio = 3.8;
+esferaDois.centro = [-2 3 -4];
+
+esferaTres = Esfera;
+esferaTres.cor = 150;
+esferaTres.raio = 1.5;
+esferaTres.centro = [-1 0 0];
+
+poligonoUm = Poligono;
+poligonoUm.cor = 1;
+poligonoUm.pontos = [[-1 -1 -3]; [-1 3 -3]; [1 2 -1]; [2 -1 -1]];
+%[1 -1 -1]; [-1 0 -1]; [1 1 -1]; [2 0 -1]
+poligonoUm.normal = cross(poligonoUm.pontos(2,:) - poligonoUm.pontos(1,:), poligonoUm.pontos(1,:) - poligonoUm.pontos(3,:));
+poligonoUm.normal = poligonoUm.normal / norm(poligonoUm.normal);
+
+listaDeObjetos = [esferaUm, esferaDois, poligonoUm, esferaTres];
+
+
+% DECLARANDO ASPECTOS DA IMAGEM ###########################################
+nx = 400; ny = 200;                             % Resolução da Imagem
+left = -8; right = 8; top = 4; bottom = -4;     % Área da Imagem
+
+pontoDeVisaoE = [2 -2 3];                       % Ponto de Visão: 'e'
+% 2 -2 3
+% -2 2 3
+
+% CALCULANDO A BASE ORTONORMAL UVW ALINHADA COM O VETOR 'e' ###############
+normaDeE = norm(pontoDeVisaoE);
+vetorW = pontoDeVisaoE / normaDeE;
+
+vetorT = vetorW;
+[~,indice] = min(abs(vetorW));  % Identifica o elemento de menor magnitude
+vetorT(indice) = 1;             % e atribui a 1
+
+vetorU = cross(vetorT,vetorW);
+normaDeU = norm(vetorU);
+vetorU = vetorU / normaDeU;
+
+vetorV = cross(vetorW,vetorU);
+
+
+% DECLARANDO VARIAVEIS PARA O CALCULO DA IMAGEM ###########################
+distanciaFocal = 5;
+imagemFinal = zeros(nx,ny,3);
+imagemFinalFliped = zeros(ny,nx,3);
+
+tsPoligonais = zeros(nx,ny);
+
+quantidadeDeObjetos = length(listaDeObjetos);
+
+vetorDeTsMaisProximo = zeros(1,2);
+
+pontoDeLuz = [2 -2 3];
+% 2 2 5
+intensidadeDaLuz = 0.003;
+corEspecularDaLuz = [255 255 0]; % 254,178,76
+constanteP = 1000;
+corDoAmbiente = [255 255 255];
+intensidadeDaCorDoAmbiente = 0.0002;
+
+% figure, hold on;
+% 
+% pp1 = poligonoUm.pontos(1,:);
+% pp2 = poligonoUm.pontos(2,:);
+% pp3 = poligonoUm.pontos(3,:);
+% 
+% plot3(pp1(1),pp1(2),pp1(3),'r*');
+% plot3(pp2(1),pp2(2),pp2(3),'r*');
+% plot3(pp3(1),pp3(2),pp3(3),'r*');
+% 
+% faux = 200;
+
+% sphere();
+% [x,y,z] = sphere;
+% surf(x,y,z);
+% surf(x*2-2,y*2+3,z*2-4);
+% axis equal;
+% daspect([1 1 1]);
+% plot3(pontoDeVisaoE(1),pontoDeVisaoE(2),pontoDeVisaoE(3),'bo');
+% plot3(pontoDeLuz(1),pontoDeLuz(2),pontoDeLuz(3),'g*');
+
+% ALGORITMO DO RAY TRACING ################################################
+for x=1 : nx
+    for y=1 : ny
+        
+        posU = left + (right - left) * (x + 0.5) / nx;
+        posV = bottom + (top - bottom) * (y + 0.5) / ny;
+        
+        % Caso Obliquo
+        origem = pontoDeVisaoE;
+        direcao = -distanciaFocal*vetorW + posU*vetorU + posV*vetorV;
+        
+        
+%         plot3(direcao(1),direcao(2),direcao(3),'.')
+        
+        % Caso Ortografico
+%         origem = pontoDeVisaoE + posU*vetorU + posV*vetorV;
+%         direcao = -vetorW;
+        
+        for i=1 : quantidadeDeObjetos
+
+            if isa(listaDeObjetos(i),'Esfera')
+                a = dot(direcao,direcao);
+                b = dot(2*direcao,(origem-listaDeObjetos(i).centro));
+                c = dot((origem-listaDeObjetos(i).centro),(origem-listaDeObjetos(i).centro)) - (listaDeObjetos(i).raio^2); 
+                delta = b^2 - 4*a*c;
+
+                if delta == 0
+                    disp('Delta igual a 0 aki');
+                end
+                if delta > 0
+                    t1 = (dot(-direcao,origem-listaDeObjetos(i).centro) + sqrt((dot(direcao, origem-listaDeObjetos(i).centro))^2 - a*c)) / a;
+                    t2 = (dot(-direcao,origem-listaDeObjetos(i).centro) - sqrt((dot(direcao, origem-listaDeObjetos(i).centro))^2 - a*c)) / a;
+                    menorT = min(abs(t1),abs(t2));
+
+                    if vetorDeTsMaisProximo(1) > menorT || vetorDeTsMaisProximo(1) == 0
+                        vetorDeTsMaisProximo(1) = menorT;
+                        vetorDeTsMaisProximo(2) = i;
+                    end
+
+                end
+                
+                
+            elseif isa(listaDeObjetos(i),'Poligono')
+                numerador = dot((listaDeObjetos(i).pontos(1,:) - origem), listaDeObjetos(i).normal);
+                denominador = dot(direcao, listaDeObjetos(i).normal);
+                tDoPoligono = numerador / denominador;
+                
+                pontoASerVerificado = origem + tDoPoligono * direcao;
+%                 quiver3(origem(1),origem(2),origem(3), direcao(1),direcao(2),direcao(3),tDoPoligono);   
+                
+                estaNoPoligono = verificaPontoNoPoligono(listaDeObjetos(i).pontos, pontoASerVerificado);
+%                 tsPoligonais(x,y) = estaNoPoligono;
+                
+                if estaNoPoligono == 1
+%                 
+%                     if faux > 0
+%                         quiver3(origem(1),origem(2),origem(3), direcao(1),direcao(2),direcao(3),tDoPoligono);
+%                         foooo = pontoASerVerificado;
+%                         plot3(pontoASerVerificado(1),pontoASerVerificado(2),pontoASerVerificado(3),'g*');
+%                         faux = faux - 1;
+%                     end
+                    
+                    if vetorDeTsMaisProximo(1) > tDoPoligono || vetorDeTsMaisProximo(1) == 0
+                        vetorDeTsMaisProximo(1) = tDoPoligono;
+                        vetorDeTsMaisProximo(2) = i;
+                    end
+                end
+                
+            end
+            
+        end
+        
+        % COLORINDO A IMAGEM USANDO CONVERSAO DE HSV PARA RGB #############
+        iObjetoMaisProximo = vetorDeTsMaisProximo(2);
+        tMaisProximo = vetorDeTsMaisProximo(1);
+        
+        if iObjetoMaisProximo == 0
+            meuHSV = [0 0 0];
+            corDoObjeto = hsv2rgb(meuHSV ./ [360, 1, 1]) * 255;
+            corDoPixel = corDoObjeto;
+        else
+            pontoQueTocaOObjeto = origem + tMaisProximo * direcao;
+%             quiver3(origem(1),origem(2),origem(3), direcao(1),direcao(2),direcao(3),tMaisProximo)
+%             plot3(pontoQueTocaOObjeto(1),pontoQueTocaOObjeto(2),pontoQueTocaOObjeto(3),'r*')
+
+            if isa(listaDeObjetos(iObjetoMaisProximo),'Esfera')
+                vetorNormal = pontoQueTocaOObjeto - listaDeObjetos(iObjetoMaisProximo).centro;
+                vetorNormal = vetorNormal / norm(vetorNormal);
+            elseif isa(listaDeObjetos(iObjetoMaisProximo),'Poligono')
+%                 vetorNormal = abs(listaDeObjetos(iObjetoMaisProximo).normal);
+                vetorNormal = listaDeObjetos(iObjetoMaisProximo).normal;
+            end
+            
+            vetorAoPontoDeLuz = pontoDeLuz - pontoQueTocaOObjeto;
+%             vetorAoPontoDeLuz = pontoQueTocaOObjeto - pontoDeLuz;
+            vetorAoPontoDeLuz = vetorAoPontoDeLuz / norm(vetorAoPontoDeLuz);
+
+            hue = listaDeObjetos(iObjetoMaisProximo).cor;
+            meuHSV = [hue 1 1];
+            corDoObjeto = hsv2rgb(meuHSV ./ [360, 1, 1]) * 255;
+            corDoPixel = [0 0 0];
+            dotando = dot(vetorNormal,vetorAoPontoDeLuz);
+            
+            parametrosExtras = [0 0 0];
+            
+            % PARA ADICIONAR/REMOVER OS PARAMETROS DO Blinn-Phong DESCOMENTE/COMENTE ABAIXO
+            vetorAoPontoDeVisao = pontoDeVisaoE - pontoQueTocaOObjeto;
+            vetorAoPontoDeVisao = vetorAoPontoDeVisao / norm(vetorAoPontoDeVisao);
+            vetorHalf = (vetorAoPontoDeLuz + vetorAoPontoDeVisao) / norm(vetorAoPontoDeLuz + vetorAoPontoDeVisao);
+            parametrosExtras(1) = corEspecularDaLuz(1) * intensidadeDaLuz * max(0, dot(vetorNormal,vetorHalf))^constanteP + corDoAmbiente(1) * intensidadeDaCorDoAmbiente;
+            parametrosExtras(2) = corEspecularDaLuz(2) * intensidadeDaLuz * max(0, dot(vetorNormal,vetorHalf))^constanteP + corDoAmbiente(2) * intensidadeDaCorDoAmbiente;
+            parametrosExtras(3) = corEspecularDaLuz(3) * intensidadeDaLuz * max(0, dot(vetorNormal,vetorHalf))^constanteP + corDoAmbiente(3) * intensidadeDaCorDoAmbiente;
+            
+            
+            corDoPixel(1) = corDoObjeto(1) * intensidadeDaLuz * max(0,dotando) + parametrosExtras(1);
+            corDoPixel(2) = corDoObjeto(2) * intensidadeDaLuz * max(0,dotando) + parametrosExtras(2);
+            corDoPixel(3) = corDoObjeto(3) * intensidadeDaLuz * max(0,dotando) + parametrosExtras(3);
+            
+            
+        end
+
+
+        imagemFinal(x,y,1) = corDoPixel(1);
+        imagemFinal(x,y,2) = corDoPixel(2);
+        imagemFinal(x,y,3) = corDoPixel(3);
+
+        
+        vetorDeTsMaisProximo(1) = 0;
+        vetorDeTsMaisProximo(2) = 0;
+        
+    end
+end
+
+
+% EXIBINDO IMAGEM #########################################################
+
+imagemFinalFliped(:,:,1) = imagemFinal(:,:,1)';
+imagemFinalFliped(:,:,2) = imagemFinal(:,:,2)';
+imagemFinalFliped(:,:,3) = imagemFinal(:,:,3)';
+
+figure, imshow(imagemFinalFliped);
