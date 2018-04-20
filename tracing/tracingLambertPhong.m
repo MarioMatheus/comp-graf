@@ -28,8 +28,8 @@ listaDeObjetos = [esferaUm, esferaDois, poligonoUm, esferaTres];
 
 
 % DECLARANDO ASPECTOS DA IMAGEM ###########################################
-nx = 400; ny = 200;                             % Resolução da Imagem
-left = -8; right = 8; top = 4; bottom = -4;     % Área da Imagem
+nx = 200; ny = 200;                             % Resolução da Imagem
+left = -5; right = 5; top = 5; bottom = -5;     % Área da Imagem
 
 pontoDeVisaoE = [2 -2 3];                       % Ponto de Visão: 'e'
 % 2 -2 3
@@ -69,6 +69,8 @@ constanteP = 1000;
 corDoAmbiente = [255 255 255];
 intensidadeDaCorDoAmbiente = 0.0002;
 
+transformadaDeEscala = [[2 0]; [0 2]];
+
 % figure, hold on;
 % 
 % pp1 = poligonoUm.pontos(1,:);
@@ -79,7 +81,6 @@ intensidadeDaCorDoAmbiente = 0.0002;
 % plot3(pp2(1),pp2(2),pp2(3),'r*');
 % plot3(pp3(1),pp3(2),pp3(3),'r*');
 % 
-% faux = 200;
 
 % sphere();
 % [x,y,z] = sphere;
@@ -97,10 +98,30 @@ for x=1 : nx
         posU = left + (right - left) * (x + 0.5) / nx;
         posV = bottom + (top - bottom) * (y + 0.5) / ny;
         
+%         if x==1 && y == ny
+%             disp(posU);
+%             disp(posV);
+%         end
+        
+        deslocamentoDeU = left + (right - left) * (1 + 0.5) / nx;
+        deslocamentoDeV = bottom + (top - bottom) * (ny + 0.5) / ny;
+        
+        deslocamentoDeU = abs(deslocamentoDeU);
+        deslocamentoDeV = abs(deslocamentoDeV);
+        
+        % (x,y=0,0) menoxX = 1, maior y = ny
+        posU = posU + deslocamentoDeU;
+        posV = posV + deslocamentoDeV;
+        
+        posTransformada = transformadaDeEscala * [(posU); (posV)];
+        posTransformada = [[1 0.4];[0 1]] * [(posTransformada(1)); (posTransformada(2))];
+        
+        posU = posTransformada(1) - deslocamentoDeU;
+        posV = posTransformada(2) - deslocamentoDeV;
+        
         % Caso Obliquo
         origem = pontoDeVisaoE;
         direcao = -distanciaFocal*vetorW + posU*vetorU + posV*vetorV;
-        
         
 %         plot3(direcao(1),direcao(2),direcao(3),'.')
         
@@ -141,16 +162,8 @@ for x=1 : nx
 %                 quiver3(origem(1),origem(2),origem(3), direcao(1),direcao(2),direcao(3),tDoPoligono);   
                 
                 estaNoPoligono = verificaPontoNoPoligono(listaDeObjetos(i).pontos, pontoASerVerificado);
-%                 tsPoligonais(x,y) = estaNoPoligono;
                 
                 if estaNoPoligono == 1
-%                 
-%                     if faux > 0
-%                         quiver3(origem(1),origem(2),origem(3), direcao(1),direcao(2),direcao(3),tDoPoligono);
-%                         foooo = pontoASerVerificado;
-%                         plot3(pontoASerVerificado(1),pontoASerVerificado(2),pontoASerVerificado(3),'g*');
-%                         faux = faux - 1;
-%                     end
                     
                     if vetorDeTsMaisProximo(1) > tDoPoligono || vetorDeTsMaisProximo(1) == 0
                         vetorDeTsMaisProximo(1) = tDoPoligono;
