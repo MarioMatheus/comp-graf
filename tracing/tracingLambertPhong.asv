@@ -37,7 +37,7 @@ luzDois.ponto = [2 2 5];
 luzDois.intensidade = 0.003;
 luzDois.corEspecular = [0,0,255];
 
-listaDeLuzes = [luzUm, luzDois];
+listaDeLuzes = [luzUm];
 
 % DECLARANDO ASPECTOS DA IMAGEM ###########################################
 nx = 200; ny = 200;                             % Resolução da Imagem
@@ -73,19 +73,15 @@ quantidadeDeObjetos = length(listaDeObjetos);
 
 vetorDeTsMaisProximo = zeros(1,2);
 
-% pontoDeLuz = [2 -2 3];
+pontoDeLuz = [2 -2 3];
 % 2 2 5
-% intensidadeDaLuz = 0.003;
-% corEspecularDaLuz = [255 255 0]; % 254,178,76
+intensidadeDaLuz = 0.003;
+corEspecularDaLuz = [255 255 0]; % 254,178,76
 constanteP = 1000;
 corDoAmbiente = [255 255 255];
 intensidadeDaCorDoAmbiente = 0.0002;
 
-teta = 125;
-transformadaDeEscala = [[cos(teta) -sin(teta)]; [sin(teta) cos(teta)]];
-
-% descomentar para aplicar a transformacao
-% transformadaDeEscala = [[1 0];[0 1]];
+transformadaDeEscala = [[2 0]; [0 2]];
 
 % figure, hold on;
 % 
@@ -130,7 +126,7 @@ for x=1 : nx
         posV = posV + deslocamentoDeV;
         
         posTransformada = transformadaDeEscala * [(posU); (posV)];
-%         posTransformada = [[1 0.4];[0 1]] * [(posTransformada(1)); (posTransformada(2))];
+        posTransformada = [[1 0.4];[0 1]] * [(posTransformada(1)); (posTransformada(2))];
         
         posU = posTransformada(1) - deslocamentoDeU;
         posV = posTransformada(2) - deslocamentoDeV;
