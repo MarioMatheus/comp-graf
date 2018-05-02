@@ -20,7 +20,6 @@ esferaTres.centro = [-1 0 0];
 poligonoUm = Poligono;
 poligonoUm.cor = 1;
 poligonoUm.pontos = [[-1 -1 -3]; [-1 3 -3]; [1 2 -1]; [2 -1 -1]];
-%[1 -1 -1]; [-1 0 -1]; [1 1 -1]; [2 0 -1]
 poligonoUm.normal = cross(poligonoUm.pontos(2,:) - poligonoUm.pontos(1,:), poligonoUm.pontos(1,:) - poligonoUm.pontos(3,:));
 poligonoUm.normal = poligonoUm.normal / norm(poligonoUm.normal);
 
@@ -67,45 +66,18 @@ distanciaFocal = 5;
 imagemFinal = zeros(nx,ny,3);
 imagemFinalFliped = zeros(ny,nx,3);
 
-% tsPoligonais = zeros(nx,ny);
-
 quantidadeDeObjetos = length(listaDeObjetos);
-
 vetorDeTsMaisProximo = zeros(1,2);
 
-% pontoDeLuz = [2 -2 3];
-% 2 2 5
-% intensidadeDaLuz = 0.003;
-% corEspecularDaLuz = [255 255 0]; % 254,178,76
-constanteP = 1000;
+constanteP = 10000;
 corDoAmbiente = [255 255 255];
 intensidadeDaCorDoAmbiente = 0.0002;
 
-teta = 125;
-transformadaDeEscala = [[cos(teta) -sin(teta)]; [sin(teta) cos(teta)]];
-
-% descomentar para aplicar a transformacao
+% PARÂMETROS DA TRANSFORMAÇÃO #############################################
+% teta = 125;
+% transformadaDeEscala = [[cos(teta) -sin(teta)]; [sin(teta) cos(teta)]];
 % transformadaDeEscala = [[1 0];[0 1]];
 
-% figure, hold on;
-% 
-% pp1 = poligonoUm.pontos(1,:);
-% pp2 = poligonoUm.pontos(2,:);
-% pp3 = poligonoUm.pontos(3,:);
-% 
-% plot3(pp1(1),pp1(2),pp1(3),'r*');
-% plot3(pp2(1),pp2(2),pp2(3),'r*');
-% plot3(pp3(1),pp3(2),pp3(3),'r*');
-% 
-
-% sphere();
-% [x,y,z] = sphere;
-% surf(x,y,z);
-% surf(x*2-2,y*2+3,z*2-4);
-% axis equal;
-% daspect([1 1 1]);
-% plot3(pontoDeVisaoE(1),pontoDeVisaoE(2),pontoDeVisaoE(3),'bo');
-% plot3(pontoDeLuz(1),pontoDeLuz(2),pontoDeLuz(3),'g*');
 
 % ALGORITMO DO RAY TRACING ################################################
 for x=1 : nx
@@ -114,34 +86,30 @@ for x=1 : nx
         posU = left + (right - left) * (x + 0.5) / nx;
         posV = bottom + (top - bottom) * (y + 0.5) / ny;
         
-%         if x==1 && y == ny
-%             disp(posU);
-%             disp(posV);
-%         end
-        
-        deslocamentoDeU = left + (right - left) * (1 + 0.5) / nx;
-        deslocamentoDeV = bottom + (top - bottom) * (ny + 0.5) / ny;
-        
-        deslocamentoDeU = abs(deslocamentoDeU);
-        deslocamentoDeV = abs(deslocamentoDeV);
-        
-        % (x,y=0,0) menoxX = 1, maior y = ny
-        posU = posU + deslocamentoDeU;
-        posV = posV + deslocamentoDeV;
-        
-        posTransformada = transformadaDeEscala * [(posU); (posV)];
-%         posTransformada = [[1 0.4];[0 1]] * [(posTransformada(1)); (posTransformada(2))];
-        
-        posU = posTransformada(1) - deslocamentoDeU;
-        posV = posTransformada(2) - deslocamentoDeV;
-        
-        % Caso Obliquo
+        % CÁLCULOS PARA TRANFORMAÇÕES #####################################
+%         deslocamentoDeU = left + (right - left) * (1 + 0.5) / nx;
+%         deslocamentoDeV = bottom + (top - bottom) * (ny + 0.5) / ny;
+%         
+%         deslocamentoDeU = abs(deslocamentoDeU);
+%         deslocamentoDeV = abs(deslocamentoDeV);
+%         
+%         % (x,y=0,0) menoxX = 1, maior y = ny
+%         posU = posU + deslocamentoDeU;
+%         posV = posV + deslocamentoDeV;
+%         
+%         posTransformada = transformadaDeEscala * [(posU); (posV)];
+% %         posTransformada = [[1 0.4];[0 1]] * [(posTransformada(1)); (posTransformada(2))];
+%         
+%         posU = posTransformada(1) - deslocamentoDeU;
+%         posV = posTransformada(2) - deslocamentoDeV;
+
+
+        % DEFINIÇÃO DO CASO A SER ABORDADO ################################        
+        % Caso Obliquo ####################################################
         origem = pontoDeVisaoE;
         direcao = -distanciaFocal*vetorW + posU*vetorU + posV*vetorV;
         
-%         plot3(direcao(1),direcao(2),direcao(3),'.')
-        
-        % Caso Ortografico
+        % Caso Ortografico ################################################
 %         origem = pontoDeVisaoE + posU*vetorU + posV*vetorV;
 %         direcao = -vetorW;
         
@@ -175,7 +143,6 @@ for x=1 : nx
                 tDoPoligono = numerador / denominador;
                 
                 pontoASerVerificado = origem + tDoPoligono * direcao;
-%                 quiver3(origem(1),origem(2),origem(3), direcao(1),direcao(2),direcao(3),tDoPoligono);   
                 
                 estaNoPoligono = verificaPontoNoPoligono(listaDeObjetos(i).pontos, pontoASerVerificado);
                 
@@ -194,32 +161,30 @@ for x=1 : nx
         iObjetoMaisProximo = vetorDeTsMaisProximo(2);
         tMaisProximo = vetorDeTsMaisProximo(1);
         
-        if iObjetoMaisProximo == 0
+        % VERIFICANDO OBJETO MAIS PROXIMO #################################
+        if iObjetoMaisProximo == 0  %Se não há objeto, pinta-se de preto
             meuHSV = [0 0 0];
             corDoObjeto = hsv2rgb(meuHSV ./ [360, 1, 1]) * 255;
             corDoPixel = corDoObjeto;
-        else
+        else %Se há verifica o obj e é calculada a normal
             pontoQueTocaOObjeto = origem + tMaisProximo * direcao;
-%             quiver3(origem(1),origem(2),origem(3), direcao(1),direcao(2),direcao(3),tMaisProximo)
-%             plot3(pontoQueTocaOObjeto(1),pontoQueTocaOObjeto(2),pontoQueTocaOObjeto(3),'r*')
 
             if isa(listaDeObjetos(iObjetoMaisProximo),'Esfera')
                 vetorNormal = pontoQueTocaOObjeto - listaDeObjetos(iObjetoMaisProximo).centro;
                 vetorNormal = vetorNormal / norm(vetorNormal);
             elseif isa(listaDeObjetos(iObjetoMaisProximo),'Poligono')
-%                 vetorNormal = abs(listaDeObjetos(iObjetoMaisProximo).normal);
                 vetorNormal = listaDeObjetos(iObjetoMaisProximo).normal;
             end
             
-            
             corDoPixel = [0 0 0];
+            % Após cáculo da normal, é realizado o cálculo de Lambert ou 
+            % Phong realizando o somatório para cada luz no ambiente.
             for j=1 : length(listaDeLuzes)
                 pontoDeLuz = listaDeLuzes(j).ponto;
                 corEspecularDaLuz = listaDeLuzes(j).corEspecular;
                 intensidadeDaLuz = listaDeLuzes(j).intensidade;
             
                 vetorAoPontoDeLuz = pontoDeLuz - pontoQueTocaOObjeto;
-    %             vetorAoPontoDeLuz = pontoQueTocaOObjeto - pontoDeLuz;
                 vetorAoPontoDeLuz = vetorAoPontoDeLuz / norm(vetorAoPontoDeLuz);
 
                 hue = listaDeObjetos(iObjetoMaisProximo).cor;
@@ -227,6 +192,7 @@ for x=1 : nx
                 corDoObjeto = hsv2rgb(meuHSV ./ [360, 1, 1]) * 255;
 
                 parametrosExtras = [0 0 0];
+                
 
                 % PARA ADICIONAR/REMOVER OS PARAMETROS DO Blinn-Phong DESCOMENTE/COMENTE ABAIXO
                 vetorAoPontoDeVisao = pontoDeVisaoE - pontoQueTocaOObjeto;
@@ -235,6 +201,7 @@ for x=1 : nx
                 parametrosExtras(1) = corEspecularDaLuz(1) * intensidadeDaLuz * max(0, dot(vetorNormal,vetorHalf))^constanteP + corDoAmbiente(1) * intensidadeDaCorDoAmbiente;
                 parametrosExtras(2) = corEspecularDaLuz(2) * intensidadeDaLuz * max(0, dot(vetorNormal,vetorHalf))^constanteP + corDoAmbiente(2) * intensidadeDaCorDoAmbiente;
                 parametrosExtras(3) = corEspecularDaLuz(3) * intensidadeDaLuz * max(0, dot(vetorNormal,vetorHalf))^constanteP + corDoAmbiente(3) * intensidadeDaCorDoAmbiente;
+                % PARA ADICIONAR/REMOVER OS PARAMETROS DO Blinn-Phong DESCOMENTE/COMENTE ACIMA
 
                 corDoPixel(1) = corDoPixel(1) + corDoObjeto(1) * intensidadeDaLuz * max(0,dot(vetorNormal,vetorAoPontoDeLuz)) + parametrosExtras(1);
                 corDoPixel(2) = corDoPixel(2) + corDoObjeto(2) * intensidadeDaLuz * max(0,dot(vetorNormal,vetorAoPontoDeLuz)) + parametrosExtras(2);

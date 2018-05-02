@@ -20,6 +20,7 @@ esferaTres.centro = [-1 0 0];
 poligonoUm = Poligono;
 poligonoUm.cor = 1;
 poligonoUm.pontos = [[-1 -1 -3]; [-1 3 -3]; [1 2 -1]; [2 -1 -1]];
+%[1 -1 -1]; [-1 0 -1]; [1 1 -1]; [2 0 -1]
 poligonoUm.normal = cross(poligonoUm.pontos(2,:) - poligonoUm.pontos(1,:), poligonoUm.pontos(1,:) - poligonoUm.pontos(3,:));
 poligonoUm.normal = poligonoUm.normal / norm(poligonoUm.normal);
 
@@ -66,18 +67,45 @@ distanciaFocal = 5;
 imagemFinal = zeros(nx,ny,3);
 imagemFinalFliped = zeros(ny,nx,3);
 
+% tsPoligonais = zeros(nx,ny);
+
 quantidadeDeObjetos = length(listaDeObjetos);
+
 vetorDeTsMaisProximo = zeros(1,2);
 
+% pontoDeLuz = [2 -2 3];
+% 2 2 5
+% intensidadeDaLuz = 0.003;
+% corEspecularDaLuz = [255 255 0]; % 254,178,76
 constanteP = 10000;
 corDoAmbiente = [255 255 255];
 intensidadeDaCorDoAmbiente = 0.0002;
 
-% PARÂMETROS DA TRANSFORMAÇÃO #############################################
 % teta = 125;
 % transformadaDeEscala = [[cos(teta) -sin(teta)]; [sin(teta) cos(teta)]];
+
+% descomentar para aplicar a transformacao
 % transformadaDeEscala = [[1 0];[0 1]];
 
+% figure, hold on;
+% 
+% pp1 = poligonoUm.pontos(1,:);
+% pp2 = poligonoUm.pontos(2,:);
+% pp3 = poligonoUm.pontos(3,:);
+% 
+% plot3(pp1(1),pp1(2),pp1(3),'r*');
+% plot3(pp2(1),pp2(2),pp2(3),'r*');
+% plot3(pp3(1),pp3(2),pp3(3),'r*');
+% 
+
+% sphere();
+% [x,y,z] = sphere;
+% surf(x,y,z);
+% surf(x*2-2,y*2+3,z*2-4);
+% axis equal;
+% daspect([1 1 1]);
+% plot3(pontoDeVisaoE(1),pontoDeVisaoE(2),pontoDeVisaoE(3),'bo');
+% plot3(pontoDeLuz(1),pontoDeLuz(2),pontoDeLuz(3),'g*');
 
 % ALGORITMO DO RAY TRACING ################################################
 for x=1 : nx
@@ -86,7 +114,11 @@ for x=1 : nx
         posU = left + (right - left) * (x + 0.5) / nx;
         posV = bottom + (top - bottom) * (y + 0.5) / ny;
         
-        % CÁLCULOS PARA TRANFORMAÇÕES #####################################
+%         if x==1 && y == ny
+%             disp(posU);
+%             disp(posV);
+%         end
+        
 %         deslocamentoDeU = left + (right - left) * (1 + 0.5) / nx;
 %         deslocamentoDeV = bottom + (top - bottom) * (ny + 0.5) / ny;
 %         
@@ -103,8 +135,7 @@ for x=1 : nx
 %         posU = posTransformada(1) - deslocamentoDeU;
 %         posV = posTransformada(2) - deslocamentoDeV;
 
-
-        % DEFINIÇÃO DO CASO A SER ABORDADO ################################        
+        
         % Caso Obliquo ####################################################
         origem = pontoDeVisaoE;
         direcao = -distanciaFocal*vetorW + posU*vetorU + posV*vetorV;
@@ -143,6 +174,7 @@ for x=1 : nx
                 tDoPoligono = numerador / denominador;
                 
                 pontoASerVerificado = origem + tDoPoligono * direcao;
+%                 quiver3(origem(1),origem(2),origem(3), direcao(1),direcao(2),direcao(3),tDoPoligono);   
                 
                 estaNoPoligono = verificaPontoNoPoligono(listaDeObjetos(i).pontos, pontoASerVerificado);
                 
@@ -161,29 +193,32 @@ for x=1 : nx
         iObjetoMaisProximo = vetorDeTsMaisProximo(2);
         tMaisProximo = vetorDeTsMaisProximo(1);
         
-        % VERIFICANDO OBJETO MAIS PROXIMO #################################
-        if iObjetoMaisProximo == 0  %Se não há objeto, pinta-se de preto
+        if iObjetoMaisProximo == 0
             meuHSV = [0 0 0];
             corDoObjeto = hsv2rgb(meuHSV ./ [360, 1, 1]) * 255;
             corDoPixel = corDoObjeto;
-        else                        %Se h
+        else
             pontoQueTocaOObjeto = origem + tMaisProximo * direcao;
+%             quiver3(origem(1),origem(2),origem(3), direcao(1),direcao(2),direcao(3),tMaisProximo)
+%             plot3(pontoQueTocaOObjeto(1),pontoQueTocaOObjeto(2),pontoQueTocaOObjeto(3),'r*')
 
             if isa(listaDeObjetos(iObjetoMaisProximo),'Esfera')
                 vetorNormal = pontoQueTocaOObjeto - listaDeObjetos(iObjetoMaisProximo).centro;
                 vetorNormal = vetorNormal / norm(vetorNormal);
             elseif isa(listaDeObjetos(iObjetoMaisProximo),'Poligono')
+%                 vetorNormal = abs(listaDeObjetos(iObjetoMaisProximo).normal);
                 vetorNormal = listaDeObjetos(iObjetoMaisProximo).normal;
             end
             
-            corDoPixel = [0 0 0];
             
+            corDoPixel = [0 0 0];
             for j=1 : length(listaDeLuzes)
                 pontoDeLuz = listaDeLuzes(j).ponto;
                 corEspecularDaLuz = listaDeLuzes(j).corEspecular;
                 intensidadeDaLuz = listaDeLuzes(j).intensidade;
             
                 vetorAoPontoDeLuz = pontoDeLuz - pontoQueTocaOObjeto;
+    %             vetorAoPontoDeLuz = pontoQueTocaOObjeto - pontoDeLuz;
                 vetorAoPontoDeLuz = vetorAoPontoDeLuz / norm(vetorAoPontoDeLuz);
 
                 hue = listaDeObjetos(iObjetoMaisProximo).cor;
