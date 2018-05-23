@@ -1,0 +1,17 @@
+
+
+function [ poligonos ] = quadradoParaPoligono( cubo )
+    x = 1; y = 2; z = 3;
+
+    quadradoBase = [[0 0 0]; [0 0 0]; [0 0 0]; [0 0 0]];
+    
+    quadradoBase(1,x) = cubo.centro(x) - (cubo.lado/2);
+    quadradoBase(1,y) = cubo.centro(y) - (cubo.lado/2);
+    quadradoBase(1,z) = cubo.centro(z) - (cubo.lado/2);
+    
+    quadradoBase(2,x) = cubo.centro(x) - (cubo.lado/2); 
+    quadradoBase(2,y) = cubo.centro(y) - (cubo.lado/2);
+    quadradoBase(2,z) = cubo.centro(z) + (cubo.lado/2);
+
+end
+
