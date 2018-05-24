@@ -23,7 +23,56 @@ poligonoUm.pontos = [[-1 -1 -3]; [-1 3 -3]; [1 2 -1]; [2 -1 -1]];
 poligonoUm.normal = cross(poligonoUm.pontos(2,:) - poligonoUm.pontos(1,:), poligonoUm.pontos(1,:) - poligonoUm.pontos(3,:));
 poligonoUm.normal = poligonoUm.normal / norm(poligonoUm.normal);
 
-listaDeObjetos = [esferaUm, esferaDois, poligonoUm, esferaTres];
+cuboTeste = Cubo;
+cuboTeste.lado = 5;
+cuboTeste.centro = [2 4 -6];
+
+pontosDoPoligonos = cuboParaPoligono(cuboTeste);
+quadradoBase = Poligono;
+quadradoTopo = Poligono;
+quadradoFrontal = Poligono;
+quadradoTraseira = Poligono;
+quadradoEsquerda = Poligono;
+quadradoDireita = Poligono;
+
+quadradoBase.pontos = pontosDoPoligonos(1);
+quadradoBase.cor = 1;
+quadradoBase.normal = cross(quadradoBase.pontos(2,:) - quadradoBase.pontos(1,:), quadradoBase.pontos(1,:) - quadradoBase.pontos(3,:));
+quadradoBase.normal = quadradoBase.normal / norm(quadradoBase.normal);
+
+quadradoTopo.pontos = pontosDoPoligonos(2);
+quadradoTopo.cor = 1;
+quadradoTopo.normal = cross(quadradoTopo.pontos(2,:) - quadradoTopo.pontos(1,:), quadradoTopo.pontos(1,:) - quadradoTopo.pontos(3,:));
+quadradoTopo.normal = quadradoTopo.normal / norm(quadradoTopo.normal);
+
+quadradoFrontal.pontos = pontosDoPoligonos(3);
+quadradoFrontal.cor = 1;
+quadradoFrontal.normal = cross(quadradoFrontal.pontos(2,:) - quadradoFrontal.pontos(1,:), quadradoFrontal.pontos(1,:) - quadradoFrontal.pontos(3,:));
+quadradoFrontal.normal = quadradoFrontal.normal / norm(quadradoFrontal.normal);
+
+quadradoTraseira.pontos = pontosDoPoligonos(4);
+quadradoTraseira.cor = 1;
+quadradoTraseira.normal = cross(quadradoTraseira.pontos(2,:) - quadradoTraseira.pontos(1,:), quadradoTraseira.pontos(1,:) - quadradoTraseira.pontos(3,:));
+quadradoTraseira.normal = quadradoTraseira.normal / norm(quadradoTraseira.normal);
+
+quadradoEsquerda.pontos = pontosDoPoligonos(5);
+quadradoEsquerda.cor = 1;
+quadradoEsquerda.normal = cross(quadradoEsquerda.pontos(2,:) - quadradoEsquerda.pontos(1,:), quadradoEsquerda.pontos(1,:) - quadradoEsquerda.pontos(3,:));
+quadradoEsquerda.normal = quadradoEsquerda.normal / norm(quadradoEsquerda.normal);
+
+quadradoDireita.pontos = pontosDoPoligonos(6);
+quadradoDireita.cor = 1;
+quadradoDireita.normal = cross(quadradoDireita.pontos(2,:) - quadradoDireita.pontos(1,:), quadradoDireita.pontos(1,:) - quadradoDireita.pontos(3,:));
+quadradoDireita.normal = quadradoDireita.normal / norm(quadradoDireita.normal);
+
+poligonoTeste = Poligono;
+poligonoTeste.cor = 1;
+poligonoTeste.pontos = cuboParaPoligono(cuboTeste);
+poligonoTeste.normal = cross(poligonoUm.pontos(2,:) - poligonoUm.pontos(1,:), poligonoUm.pontos(1,:) - poligonoUm.pontos(3,:));
+poligonoTeste.normal = poligonoUm.normal / norm(poligonoUm.normal);
+
+% listaDeObjetos = [esferaUm, esferaDois, poligonoUm, esferaTres];
+listaDeObjetos = [quadradoBase, quadradoTopo, quadradoEsquerda, quadradoDireita, quadradoFrontal, quadradoTraseira];
 
 % INSTANCIANDO AS LUZES DO ESPAÇO #########################################
 luzUm = Luz;
