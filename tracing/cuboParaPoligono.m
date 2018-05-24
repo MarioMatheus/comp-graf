@@ -1,6 +1,6 @@
 
 
-function [ poligonos ] = cuboParaPoligono( cubo )
+function [ b, f, tr, t, e, d ] = cuboParaPoligono( cubo )
     x = 1; y = 2; z = 3;
 
     quadradoBase = [[0 0 0]; [0 0 0]; [0 0 0]; [0 0 0]];
@@ -74,13 +74,13 @@ function [ poligonos ] = cuboParaPoligono( cubo )
     quadradoTopo(2,y) = quadradoTraseira(2,y);
     quadradoTopo(2,z) = quadradoTraseira(2,z);
     
-    quadradoTopo(3,x) = cubo.centro(x) - (cubo.lado/2);
-    quadradoTopo(3,y) = cubo.centro(y) + (cubo.lado/2);
-    quadradoTopo(3,z) = cubo.centro(z) + (cubo.lado/2);
+    quadradoTopo(3,x) = quadradoFrontal(2,x);
+    quadradoTopo(3,y) = quadradoFrontal(2,y);
+    quadradoTopo(3,z) = quadradoFrontal(2,z);
     
-    quadradoTopo(4,x) = cubo.centro(x) - (cubo.lado/2); 
-    quadradoTopo(4,y) = cubo.centro(y) - (cubo.lado/2);
-    quadradoTopo(4,z) = cubo.centro(z) + (cubo.lado/2);
+    quadradoTopo(4,x) = quadradoFrontal(1,x);
+    quadradoTopo(4,y) = quadradoFrontal(1,y);
+    quadradoTopo(4,z) = quadradoFrontal(1,z);
     
     %######################################################################
     
@@ -93,12 +93,12 @@ function [ poligonos ] = cuboParaPoligono( cubo )
     quadradoEsquerda(2,z) = quadradoTopo(4,z);
     
     quadradoEsquerda(3,x) = quadradoBase(4,x);
-    quadradoEsquerda(3,y) = quadradoBase(4,x);
-    quadradoEsquerda(3,z) = quadradoBase(4,x);
+    quadradoEsquerda(3,y) = quadradoBase(4,y);
+    quadradoEsquerda(3,z) = quadradoBase(4,z);
     
     quadradoEsquerda(4,x) = quadradoBase(1,x);
-    quadradoEsquerda(4,y) = quadradoBase(1,x);
-    quadradoEsquerda(4,z) = quadradoBase(1,x);
+    quadradoEsquerda(4,y) = quadradoBase(1,y);
+    quadradoEsquerda(4,z) = quadradoBase(1,z);
     
     %######################################################################
     
@@ -111,16 +111,22 @@ function [ poligonos ] = cuboParaPoligono( cubo )
     quadradoDireita(2,z) = quadradoTopo(2,z);
     
     quadradoDireita(3,x) = quadradoBase(2,x);
-    quadradoDireita(3,y) = quadradoBase(2,x);
-    quadradoDireita(3,z) = quadradoBase(2,x);
+    quadradoDireita(3,y) = quadradoBase(2,y);
+    quadradoDireita(3,z) = quadradoBase(2,z);
     
     quadradoDireita(4,x) = quadradoBase(3,x);
-    quadradoDireita(4,y) = quadradoBase(3,x);
-    quadradoDireita(4,z) = quadradoBase(3,x);
+    quadradoDireita(4,y) = quadradoBase(3,y);
+    quadradoDireita(4,z) = quadradoBase(3,z);
     
     %######################################################################
     
-    poligonos = [quadradoBase, quadradoTopo, quadradoEsquerda, quadradoDireita, quadradoFrontal, quadradoTraseira];
+    b = quadradoBase;
+    f = quadradoFrontal;
+    tr = quadradoTraseira;
+    t = quadradoTopo;
+    e = quadradoEsquerda;
+    d = quadradoDireita;
+%     poligonos = [quadradoBase, quadradoTopo, quadradoEsquerda, quadradoDireita, quadradoFrontal, quadradoTraseira];
 
 end
 

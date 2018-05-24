@@ -24,8 +24,8 @@ poligonoUm.normal = cross(poligonoUm.pontos(2,:) - poligonoUm.pontos(1,:), polig
 poligonoUm.normal = poligonoUm.normal / norm(poligonoUm.normal);
 
 cuboTeste = Cubo;
-cuboTeste.lado = 10;
-cuboTeste.centro = [-8 10 -15];
+cuboTeste.lado = 5;
+cuboTeste.centro = [-8 6 -15];
 
 % pontosDoPoligonos = cuboParaPoligono(cuboTeste);
 quadradoBase = Poligono;
@@ -37,37 +37,37 @@ quadradoDireita = Poligono;
 
 [quadradoBase.pontos, quadradoFrontal.pontos, quadradoTraseira.pontos, quadradoTopo.pontos, quadradoEsquerda.pontos, quadradoDireita.pontos] = cuboParaPoligono(cuboTeste);
 
-quadradoBase.cor = 100;
+quadradoBase.cor = 1;
 quadradoBase.normal = cross(quadradoBase.pontos(2,:) - quadradoBase.pontos(1,:), quadradoBase.pontos(1,:) - quadradoBase.pontos(3,:));
-quadradoBase.normal = -(quadradoBase.normal / norm(quadradoBase.normal));
+quadradoBase.normal = quadradoBase.normal / norm(quadradoBase.normal);
 
-quadradoTopo.cor = 100;
+quadradoTopo.cor = 25;
 quadradoTopo.normal = cross(quadradoTopo.pontos(2,:) - quadradoTopo.pontos(1,:), quadradoTopo.pontos(1,:) - quadradoTopo.pontos(3,:));
-quadradoTopo.normal = -(quadradoTopo.normal / norm(quadradoTopo.normal));
+quadradoTopo.normal = quadradoTopo.normal / norm(quadradoTopo.normal);
 
-quadradoFrontal.cor = 100;
+quadradoFrontal.cor = 50;
 quadradoFrontal.normal = cross(quadradoFrontal.pontos(2,:) - quadradoFrontal.pontos(1,:), quadradoFrontal.pontos(1,:) - quadradoFrontal.pontos(3,:));
 quadradoFrontal.normal = quadradoFrontal.normal / norm(quadradoFrontal.normal);
 
 
-quadradoTraseira.cor = 100;
+quadradoTraseira.cor = 75;
 quadradoTraseira.normal = cross(quadradoTraseira.pontos(2,:) - quadradoTraseira.pontos(1,:), quadradoTraseira.pontos(1,:) - quadradoTraseira.pontos(3,:));
 quadradoTraseira.normal = quadradoTraseira.normal / norm(quadradoTraseira.normal);
 
 
 quadradoEsquerda.cor = 100;
 quadradoEsquerda.normal = cross(quadradoEsquerda.pontos(2,:) - quadradoEsquerda.pontos(1,:), quadradoEsquerda.pontos(1,:) - quadradoEsquerda.pontos(3,:));
-quadradoEsquerda.normal = -(quadradoEsquerda.normal / norm(quadradoEsquerda.normal));
+quadradoEsquerda.normal = quadradoEsquerda.normal / norm(quadradoEsquerda.normal);
 
 
-quadradoDireita.cor = 100;
+quadradoDireita.cor = 125;
 quadradoDireita.normal = cross(quadradoDireita.pontos(2,:) - quadradoDireita.pontos(1,:), quadradoDireita.pontos(1,:) - quadradoDireita.pontos(3,:));
-quadradoDireita.normal = -(quadradoDireita.normal / norm(quadradoDireita.normal));
+quadradoDireita.normal = quadradoDireita.normal / norm(quadradoDireita.normal);
 
 
 
 % listaDeObjetos = [esferaUm, esferaDois, poligonoUm, esferaTres];
-listaDeObjetos = [quadradoBase, quadradoTopo, quadradoFrontal, quadradoTraseira, quadradoEsquerda, quadradoDireita];
+listaDeObjetos = [quadradoBase, quadradoFrontal, quadradoTraseira, quadradoTopo, quadradoEsquerda, quadradoDireita];
 
 % INSTANCIANDO AS LUZES DO ESPAÇO #########################################
 luzUm = Luz;
@@ -81,11 +81,11 @@ luzDois.intensidade = 0.003;
 luzDois.corEspecular = [0,0,255];
 
 luzTres = Luz;
-luzTres.ponto = [-8 10 15];
-luzTres.intensidade = 0.5;
-luzTres.corEspecular = [100,100,50];
+luzTres.ponto = [-4 4 -10];
+luzTres.intensidade = 0.003;
+luzTres.corEspecular = [0,0,255];
 
-listaDeLuzes = [luzUm];
+listaDeLuzes = [luzUm, luzDois, luzTres];
 
 % DECLARANDO ASPECTOS DA IMAGEM ###########################################
 nx = 200; ny = 200;                             % Resolução da Imagem
