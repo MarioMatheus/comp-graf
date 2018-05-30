@@ -23,9 +23,9 @@ poligonoUm.pontos = [[-1 -1 -3]; [-1 3 -3]; [1 2 -1]; [2 -1 -1]];
 poligonoUm.normal = cross(poligonoUm.pontos(2,:) - poligonoUm.pontos(1,:), poligonoUm.pontos(1,:) - poligonoUm.pontos(3,:));
 poligonoUm.normal = poligonoUm.normal / norm(poligonoUm.normal);
 
-cuboTeste = Cubo;
-cuboTeste.lado = 10;
-cuboTeste.centro = [-8 10 -15];
+cuboMagico = Cubo;
+cuboMagico.lado = 10;
+cuboMagico.centro = [-8 10 -15];
 
 % pontosDoPoligonos = cuboParaPoligono(cuboTeste);
 quadradoBase = Poligono;
@@ -35,7 +35,7 @@ quadradoTraseira = Poligono;
 quadradoEsquerda = Poligono;
 quadradoDireita = Poligono;
 
-[quadradoBase.pontos, quadradoFrontal.pontos, quadradoTraseira.pontos, quadradoTopo.pontos, quadradoEsquerda.pontos, quadradoDireita.pontos] = cuboParaPoligono(cuboTeste);
+[quadradoBase.pontos, quadradoFrontal.pontos, quadradoTraseira.pontos, quadradoTopo.pontos, quadradoEsquerda.pontos, quadradoDireita.pontos] = cuboParaPoligono(cuboMagico);
 
 quadradoBase.cor = 100;
 quadradoBase.normal = cross(quadradoBase.pontos(2,:) - quadradoBase.pontos(1,:), quadradoBase.pontos(1,:) - quadradoBase.pontos(3,:));
@@ -147,7 +147,6 @@ for x=1 : nx
 %         posV = posV + deslocamentoDeV;
 %         
 %         posTransformada = transformadaDeEscala * [(posU); (posV)];
-% %         posTransformada = [[1 0.4];[0 1]] * [(posTransformada(1)); (posTransformada(2))];
 %         
 %         posU = posTransformada(1) - deslocamentoDeU;
 %         posV = posTransformada(2) - deslocamentoDeV;
@@ -163,6 +162,25 @@ for x=1 : nx
 %         direcao = -vetorW;
         
         for i=1 : quantidadeDeObjetos
+            
+            % TENTATIVAS DE ROTACAO - TAKE 2 ##############################
+%             anguloDeRotacao = 30; % em graus
+%             a = anguloDeRotacao;
+%             matrizDeRotacao = [[cos(a) -sin(a) 0]; [sin(a) cos(a) 0]; [0 0 1]];
+%             matrizRUVW = pontoParaMatrizRUVW(cuboMagico.centro);
+%             
+%             % TEM Q SER PONTO POR PONTO DENTRO DOS PONTOS #################
+%             for p=1 : 4
+%                 top = listaDeObjetos(i).pontos;
+%                 um = top(p,:);
+%             end
+%             
+%             listaDeObjetos(i).pontos = (listaDeObjetos(i).pontos) * matrizRUVW;
+%             listaDeObjetos(i).pontos = (listaDeObjetos(i).pontos) * matrizDeRotacao;
+%             listaDeObjetos(i).pontos = (listaDeObjetos(i).pontos) * matrizRUVW.';
+%             
+%             listaDeObjetos(i).normal = cross(listaDeObjetos(i).pontos(2,:) - listaDeObjetos(i).pontos(1,:), listaDeObjetos(i).pontos(1,:) - listaDeObjetos(i).pontos(3,:));
+%             listaDeObjetos(i).normal = -(listaDeObjetos(i).normal / norm(listaDeObjetos(i).normal));
 
             if isa(listaDeObjetos(i),'Esfera')
                 a = dot(direcao,direcao);
