@@ -33,7 +33,7 @@ function [estaDentro] = verificaPontoNoPoligono(pontosDoPoligono, pontoASerVerif
     % considerando pontos jah coplanares, para pontos em cima da borda do
     % poligono
     % para contar com pontos na linha, descomente abaixo
-    p = p + z;
+    % p = p + z;
     
     
     if abs(p) == qtdPontos

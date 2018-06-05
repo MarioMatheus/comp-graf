@@ -163,25 +163,30 @@ for x=1 : nx
         
         for i=1 : quantidadeDeObjetos
             
-            % TENTATIVAS DE ROTACAO - TAKE 2 ##############################
+%             % TENTATIVAS DE ROTACAO - TAKE 4 ##############################
 %             anguloDeRotacao = 30; % em graus
 %             a = anguloDeRotacao;
 %             matrizDeRotacao = [[cos(a) -sin(a) 0]; [sin(a) cos(a) 0]; [0 0 1]];
 %             matrizRUVW = pontoParaMatrizRUVW(cuboMagico.centro);
 %             
-%             % TEM Q SER PONTO POR PONTO DENTRO DOS PONTOS #################
-%             for p=1 : 4
-%                 top = listaDeObjetos(i).pontos;
-%                 um = top(p,:);
+%             % TEM Q SER PONTO POR PONTO DENTRO DOS PONTOS ###############
+%             aux = listaDeObjetos(i).pontos;
+%             for j=1 : 4
+%                 transformacao = matrizRUVW * matrizDeRotacao * matrizRUVW.';
+%                 ponto = aux(j,:).';
+%                 ponto = transformacao * ponto;
+%                 ponto = ponto.';
+%                 aux(j,:) = ponto;
 %             end
-%             
-%             listaDeObjetos(i).pontos = (listaDeObjetos(i).pontos) * matrizRUVW;
-%             listaDeObjetos(i).pontos = (listaDeObjetos(i).pontos) * matrizDeRotacao;
-%             listaDeObjetos(i).pontos = (listaDeObjetos(i).pontos) * matrizRUVW.';
+%             listaDeObjetos(i).pontos = aux;
 %             
 %             listaDeObjetos(i).normal = cross(listaDeObjetos(i).pontos(2,:) - listaDeObjetos(i).pontos(1,:), listaDeObjetos(i).pontos(1,:) - listaDeObjetos(i).pontos(3,:));
 %             listaDeObjetos(i).normal = -(listaDeObjetos(i).normal / norm(listaDeObjetos(i).normal));
+%             if i==3 || i==4
+%                 listaDeObjetos(i).normal = (listaDeObjetos(i).normal) * -1;
+%             end
 
+            % MAPEANDO OBJETOS POR PIXEL ##################################
             if isa(listaDeObjetos(i),'Esfera')
                 a = dot(direcao,direcao);
                 b = dot(2*direcao,(origem-listaDeObjetos(i).centro));
