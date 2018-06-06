@@ -88,7 +88,7 @@ luzTres.corEspecular = [100,100,50];
 listaDeLuzes = [luzUm];
 
 % DECLARANDO ASPECTOS DA IMAGEM ###########################################
-nx = 100; ny = 100;                             % Resolução da Imagem
+nx = 400; ny = 400;                             % Resolução da Imagem
 left = -5; right = 5; top = 5; bottom = -5;     % Área da Imagem
 
 pontoDeVisaoE = [2 -2 3];                       % Ponto de Visão: 'e'
