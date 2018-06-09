@@ -128,6 +128,55 @@ intensidadeDaCorDoAmbiente = 0.0005;
 % transformadaDeEscala = [[1 0];[0 1]];
 
 
+% TENTATIVAS DE ROTACAO - TAKE 6 ##########################################
+% figure, hold on;
+anguloDeRotacao = 30; % em graus
+a = anguloDeRotacao;
+matrizDeRotacao = [[cos(a) -sin(a) 0]; [sin(a) cos(a) 0]; [0 0 1]];
+matrizRUVW = pontoParaMatrizRUVW(cuboMagico.centro);
+
+for i=1: quantidadeDeObjetos
+    % TEM Q SER PONTO POR PONTO DENTRO DOS PONTOS ###############
+    aux = listaDeObjetos(i).pontos;
+    %Plota o cubo antes de rotacionar
+%     aux2 = aux';
+%     aux2 = [aux' aux2(:, 1)];
+%     plot3(aux2(1, :), aux2(2, :), aux2(3, :), '--');
+% 
+%     plot3(aux(1, 1), aux(1, 2), aux(1, 3), '.');
+%     plot3(aux(2, 1), aux(2, 2), aux(2, 3), '.');
+%     plot3(aux(3, 1), aux(3, 2), aux(3, 3), '.');
+%     plot3(aux(4, 1), aux(4, 2), aux(4, 3), '.');
+
+    for j=1 : 4
+        % transformacao = matrizRUVW * matrizDeRotacao * matrizRUVW.';
+        ponto = aux(j,:).';
+        ponto = matrizRUVW * ponto;
+        ponto = matrizDeRotacao * ponto;
+        ponto = matrizRUVW.' * ponto;
+        % ponto = transformacao * ponto;
+        ponto = ponto.';
+        aux(j,:) = ponto;
+    end
+    listaDeObjetos(i).pontos = aux;
+
+    %Plota o cubo depois de rotacionar
+%     aux2 = listaDeObjetos(i).pontos';
+%     aux2 = [listaDeObjetos(i).pontos' aux2(:, 1)];
+%     plot3(aux2(1, :), aux2(2, :), aux2(3, :));
+% 
+%     plot3(listaDeObjetos(i).pontos(1, 1), listaDeObjetos(i).pontos(1, 2), listaDeObjetos(i).pontos(1, 3), '*');
+%     plot3(listaDeObjetos(i).pontos(2, 1), listaDeObjetos(i).pontos(2, 2), listaDeObjetos(i).pontos(2, 3), '*');
+%     plot3(listaDeObjetos(i).pontos(3, 1), listaDeObjetos(i).pontos(3, 2), listaDeObjetos(i).pontos(3, 3), '*');
+%     plot3(listaDeObjetos(i).pontos(4, 1), listaDeObjetos(i).pontos(4, 2), listaDeObjetos(i).pontos(4, 3), '*');
+
+    listaDeObjetos(i).normal = cross(listaDeObjetos(i).pontos(2,:) - listaDeObjetos(i).pontos(1,:), listaDeObjetos(i).pontos(1,:) - listaDeObjetos(i).pontos(3,:));
+    listaDeObjetos(i).normal = -(listaDeObjetos(i).normal / norm(listaDeObjetos(i).normal));
+    if i==3 || i==4
+        listaDeObjetos(i).normal = (listaDeObjetos(i).normal) * -1;
+    end
+end
+
 % ALGORITMO DO RAY TRACING ################################################
 for x=1 : nx
     for y=1 : ny
@@ -160,54 +209,7 @@ for x=1 : nx
         % Caso Ortografico ################################################
 %         origem = pontoDeVisaoE + posU*vetorU + posV*vetorV;
 %         direcao = -vetorW;
-%          figure, hold on;
         for i=1 : quantidadeDeObjetos
-            
-            % TENTATIVAS DE ROTACAO - TAKE 4 ##############################
-            anguloDeRotacao = 2; % em graus
-            a = anguloDeRotacao;
-            matrizDeRotacao = [[cos(a) -sin(a) 0]; [sin(a) cos(a) 0]; [0 0 1]];
-            matrizRUVW = pontoParaMatrizRUVW(cuboMagico.centro);
-            
-            % TEM Q SER PONTO POR PONTO DENTRO DOS PONTOS ###############
-            aux = listaDeObjetos(i).pontos;
-            %Plota o cubo antes de rotacionar
-%             aux2 = aux';
-%             aux2 = [aux' aux2(:, 1)];
-%             plot3(aux2(1, :), aux2(2, :), aux2(3, :), '--');
-
-%             plot3(aux(1, 1), aux(1, 2), aux(1, 3), '.');
-%             plot3(aux(2, 1), aux(2, 2), aux(2, 3), '.');
-%             plot3(aux(3, 1), aux(3, 2), aux(3, 3), '.');
-%             plot3(aux(4, 1), aux(4, 2), aux(4, 3), '.');
-            
-            for j=1 : 4
-%                 transformacao = matrizRUVW * matrizDeRotacao * matrizRUVW.';
-                ponto = aux(j,:).';
-                ponto = matrizRUVW * ponto;
-                ponto = matrizDeRotacao * ponto;
-                ponto = matrizRUVW.' * ponto;
-%                 ponto = transformacao * ponto;
-                ponto = ponto.';
-                aux(j,:) = ponto;
-            end
-            listaDeObjetos(i).pontos = aux;
-
-            %Plota o cubo depois de rotacionar
-%             aux2 = aux';
-%             aux2 = [aux' aux2(:, 1)];
-%             plot3(aux2(1, :), aux2(2, :), aux2(3, :));
-            
-%             plot3(aux(1, 1), aux(1, 2), aux(1, 3), '*');
-%             plot3(aux(2, 1), aux(2, 2), aux(2, 3), '*');
-%             plot3(aux(3, 1), aux(3, 2), aux(3, 3), '*');
-%             plot3(aux(4, 1), aux(4, 2), aux(4, 3), '*');
-            
-            listaDeObjetos(i).normal = cross(listaDeObjetos(i).pontos(2,:) - listaDeObjetos(i).pontos(1,:), listaDeObjetos(i).pontos(1,:) - listaDeObjetos(i).pontos(3,:));
-            listaDeObjetos(i).normal = -(listaDeObjetos(i).normal / norm(listaDeObjetos(i).normal));
-            if i==3 || i==4
-                listaDeObjetos(i).normal = (listaDeObjetos(i).normal) * -1;
-            end
 
             % MAPEANDO OBJETOS POR PIXEL ##################################
             if isa(listaDeObjetos(i),'Esfera')
