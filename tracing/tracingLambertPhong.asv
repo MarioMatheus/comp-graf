@@ -37,11 +37,11 @@ quadradoDireita = Poligono;
 
 [quadradoBase.pontos, quadradoFrontal.pontos, quadradoTraseira.pontos, quadradoTopo.pontos, quadradoEsquerda.pontos, quadradoDireita.pontos] = cuboParaPoligono(cuboMagico);
 
-quadradoBase.cor = 1;
+quadradoBase.cor = 100;
 quadradoBase.normal = cross(quadradoBase.pontos(2,:) - quadradoBase.pontos(1,:), quadradoBase.pontos(1,:) - quadradoBase.pontos(3,:));
 quadradoBase.normal = -(quadradoBase.normal / norm(quadradoBase.normal));
 
-quadradoTopo.cor = 50;
+quadradoTopo.cor = 100;
 quadradoTopo.normal = cross(quadradoTopo.pontos(2,:) - quadradoTopo.pontos(1,:), quadradoTopo.pontos(1,:) - quadradoTopo.pontos(3,:));
 quadradoTopo.normal = -(quadradoTopo.normal / norm(quadradoTopo.normal));
 
@@ -50,17 +50,17 @@ quadradoFrontal.normal = cross(quadradoFrontal.pontos(2,:) - quadradoFrontal.pon
 quadradoFrontal.normal = quadradoFrontal.normal / norm(quadradoFrontal.normal);
 
 
-quadradoTraseira.cor = 150;
+quadradoTraseira.cor = 100;
 quadradoTraseira.normal = cross(quadradoTraseira.pontos(2,:) - quadradoTraseira.pontos(1,:), quadradoTraseira.pontos(1,:) - quadradoTraseira.pontos(3,:));
 quadradoTraseira.normal = quadradoTraseira.normal / norm(quadradoTraseira.normal);
 
 
-quadradoEsquerda.cor = 200;
+quadradoEsquerda.cor = 100;
 quadradoEsquerda.normal = cross(quadradoEsquerda.pontos(2,:) - quadradoEsquerda.pontos(1,:), quadradoEsquerda.pontos(1,:) - quadradoEsquerda.pontos(3,:));
 quadradoEsquerda.normal = -(quadradoEsquerda.normal / norm(quadradoEsquerda.normal));
 
 
-quadradoDireita.cor = 250;
+quadradoDireita.cor = 100;
 quadradoDireita.normal = cross(quadradoDireita.pontos(2,:) - quadradoDireita.pontos(1,:), quadradoDireita.pontos(1,:) - quadradoDireita.pontos(3,:));
 quadradoDireita.normal = -(quadradoDireita.normal / norm(quadradoDireita.normal));
 
@@ -68,7 +68,6 @@ quadradoDireita.normal = -(quadradoDireita.normal / norm(quadradoDireita.normal)
 
 % listaDeObjetos = [esferaUm, esferaDois, poligonoUm, esferaTres];
 listaDeObjetos = [quadradoBase, quadradoTopo, quadradoFrontal, quadradoTraseira, quadradoEsquerda, quadradoDireita];
-listaDeObjetosAuxiliares = [quadradoBase, quadradoTopo, quadradoFrontal, quadradoTraseira, quadradoEsquerda, quadradoDireita];
 
 % INSTANCIANDO AS LUZES DO ESPAÇO #########################################
 luzUm = Luz;
@@ -128,18 +127,17 @@ intensidadeDaCorDoAmbiente = 0.0005;
 % transformadaDeEscala = [[cos(teta) -sin(teta)]; [sin(teta) cos(teta)]];
 % transformadaDeEscala = [[1 0];[0 1]];
 fig = figure; hold on;
-multiplicadorAngulacao = 10;
-
-for angulo = 1 : 90 * multiplicadorAngulacao
+for angulo = 1 : 30
     % TENTATIVAS DE ROTACAO - TAKE 6 ##########################################
-    % figure, hold on; 
-    a = angulo / multiplicadorAngulacao; % 0.001; % em graus
+    % figure, hold on;
+    anguloDeRotacao = angulo; % em graus
+    a = anguloDeRotacao;
     matrizDeRotacao = [[cos(a) -sin(a) 0]; [sin(a) cos(a) 0]; [0 0 1]];
     matrizRUVW = pontoParaMatrizRUVW(cuboMagico.centro);
 
     for i=1: quantidadeDeObjetos
         % TEM Q SER PONTO POR PONTO DENTRO DOS PONTOS ###############
-        aux = listaDeObjetosAuxiliares(i).pontos;
+        aux = listaDeObjetos(i).pontos;
         %Plota o cubo antes de rotacionar
     %     aux2 = aux';
     %     aux2 = [aux' aux2(:, 1)];
@@ -180,8 +178,8 @@ for angulo = 1 : 90 * multiplicadorAngulacao
     end
 
     % ALGORITMO DO RAY TRACING ################################################
-    for x=28 : nx-28
-        for y=28 : ny-28
+    for x=1 : nx
+        for y=1 : ny
 
             posU = left + (right - left) * (x + 0.5) / nx;
             posV = bottom + (top - bottom) * (y + 0.5) / ny;
@@ -328,9 +326,8 @@ for angulo = 1 : 90 * multiplicadorAngulacao
     imagemFinalFliped(:,:,1) = imagemFinal(:,:,1)';
     imagemFinalFliped(:,:,2) = imagemFinal(:,:,2)';
     imagemFinalFliped(:,:,3) = imagemFinal(:,:,3)';
-    imshow(imagemFinalFliped);
+    fig; imshow(imagemFinalFliped);
     refresh(fig);
-    pause(0.0001);
     disp(angulo);
 end
 
