@@ -23,52 +23,85 @@ poligonoUm.pontos = [[-1 -1 -3]; [-1 3 -3]; [1 2 -1]; [2 -1 -1]];
 poligonoUm.normal = cross(poligonoUm.pontos(2,:) - poligonoUm.pontos(1,:), poligonoUm.pontos(1,:) - poligonoUm.pontos(3,:));
 poligonoUm.normal = poligonoUm.normal / norm(poligonoUm.normal);
 
-cuboMagico = Cubo;
-cuboMagico.lado = 10;
-cuboMagico.centro = [-8 10 -15];
+% OS CUBOS AQUI ###########################################################
+ladoCubo = 2;
+cuboUm = Cubo;
+cuboUm.lado = ladoCubo;
+cuboUm.centro = [-8 10 -15];
 
-% pontosDoPoligonos = cuboParaPoligono(cuboTeste);
-quadradoBase = Poligono;
-quadradoTopo = Poligono;
-quadradoFrontal = Poligono;
-quadradoTraseira = Poligono;
-quadradoEsquerda = Poligono;
-quadradoDireita = Poligono;
+cuboDois = Cubo;
+cuboDois.lado = ladoCubo;
+cuboDois.centro = [-8 12 -15];
 
-[quadradoBase.pontos, quadradoFrontal.pontos, quadradoTraseira.pontos, quadradoTopo.pontos, quadradoEsquerda.pontos, quadradoDireita.pontos] = cuboParaPoligono(cuboMagico);
+cuboTres = Cubo;
+cuboTres.lado = ladoCubo;
+cuboTres.centro = [-8 14 -15];
 
-quadradoBase.cor = 1;
-quadradoBase.normal = cross(quadradoBase.pontos(2,:) - quadradoBase.pontos(1,:), quadradoBase.pontos(1,:) - quadradoBase.pontos(3,:));
-quadradoBase.normal = -(quadradoBase.normal / norm(quadradoBase.normal));
+cuboQuatro = Cubo;
+cuboQuatro.lado = ladoCubo;
+cuboQuatro.centro = [-10 10 -15];
 
-quadradoTopo.cor = 50;
-quadradoTopo.normal = cross(quadradoTopo.pontos(2,:) - quadradoTopo.pontos(1,:), quadradoTopo.pontos(1,:) - quadradoTopo.pontos(3,:));
-quadradoTopo.normal = -(quadradoTopo.normal / norm(quadradoTopo.normal));
+cuboCinco = Cubo;
+cuboCinco.lado = ladoCubo;
+cuboCinco.centro = [-10 12 -15];
 
-quadradoFrontal.cor = 100;
-quadradoFrontal.normal = cross(quadradoFrontal.pontos(2,:) - quadradoFrontal.pontos(1,:), quadradoFrontal.pontos(1,:) - quadradoFrontal.pontos(3,:));
-quadradoFrontal.normal = quadradoFrontal.normal / norm(quadradoFrontal.normal);
+cuboSeis = Cubo;
+cuboSeis.lado = ladoCubo;
+cuboSeis.centro = [-10 14 -15];
 
+cubos = [cuboUm];
+centros = [
+    [-8 12 -15];[-8 14 -15];
+    [-10 10 -15];[-10 12 -15];[-10 14 -15];
+    [-12 10 -15];[-12 12 -15];[-12 14 -15];
+    
+    [-8 10 -17]; [-8 12 -17];[-8 14 -17];
+    [-10 10 -17];[-10 12 -17];[-10 14 -17];
+    [-12 10 -17];[-12 12 -17];[-12 14 -17];
+    
+    [-8 10 -19]; [-8 12 -19];[-8 14 -19];
+    [-10 10 -19];[-10 12 -19];[-10 14 -19];
+    [-12 10 -19];[-12 12 -19];[-12 14 -19];];
 
-quadradoTraseira.cor = 150;
-quadradoTraseira.normal = cross(quadradoTraseira.pontos(2,:) - quadradoTraseira.pontos(1,:), quadradoTraseira.pontos(1,:) - quadradoTraseira.pontos(3,:));
-quadradoTraseira.normal = quadradoTraseira.normal / norm(quadradoTraseira.normal);
+for cubando = 1 : size(centros,1)
+    cubo = Cubo;
+    cubo.lado = ladoCubo;
+    
+    cubo.centro = centros(cubando,:);
+    cubos(end+1) = cubo;
+end
 
+% #########################################################################
 
-quadradoEsquerda.cor = 200;
-quadradoEsquerda.normal = cross(quadradoEsquerda.pontos(2,:) - quadradoEsquerda.pontos(1,:), quadradoEsquerda.pontos(1,:) - quadradoEsquerda.pontos(3,:));
-quadradoEsquerda.normal = -(quadradoEsquerda.normal / norm(quadradoEsquerda.normal));
+pBase = Poligono;
+pFrontal = Poligono;
+pTraseira = Poligono;
+pTopo = Poligono;
+pEsquerda = Poligono;
+pDireita = Poligono;
 
+initialPoligono = Poligono;
+initialPoligono.pontos = [[0 0 0]; [0 0 0]; [0 0 0]; [0 0 0]];
+initialPoligono.cor = 0;
 
-quadradoDireita.cor = 250;
-quadradoDireita.normal = cross(quadradoDireita.pontos(2,:) - quadradoDireita.pontos(1,:), quadradoDireita.pontos(1,:) - quadradoDireita.pontos(3,:));
-quadradoDireita.normal = -(quadradoDireita.normal / norm(quadradoDireita.normal));
+listaDeObjetos = [initialPoligono];
 
+% appendando na lista de objetos
+for cubo = 1 : length(cubos)
+    [pBase.pontos, pFrontal.pontos, pTraseira.pontos, pTopo.pontos, pEsquerda.pontos, pDireita.pontos] = cuboParaPoligono(cubos(cubo));
+    
+    corUm = rand*255; corDois = rand*255; corTres = rand*255;
+    pBase.cor = corUm; pFrontal.cor = corDois; pTraseira.cor = corTres; pTopo.cor = corUm; pEsquerda.cor = corDois; pDireita.cor = corTres;
+   
+    listaDeObjetos(end+1) = pBase;
+    listaDeObjetos(end+1) = pFrontal;
+    listaDeObjetos(end+1) = pTraseira;
+    listaDeObjetos(end+1) = pTopo;
+    listaDeObjetos(end+1) = pEsquerda;
+    listaDeObjetos(end+1) = pDireita;
+end
 
-
-% listaDeObjetos = [esferaUm, esferaDois, poligonoUm, esferaTres];
-listaDeObjetos = [quadradoBase, quadradoTopo, quadradoFrontal, quadradoTraseira, quadradoEsquerda, quadradoDireita];
-listaDeObjetosAuxiliares = [quadradoBase, quadradoTopo, quadradoFrontal, quadradoTraseira, quadradoEsquerda, quadradoDireita];
+listaDeObjetosAuxiliares = listaDeObjetos;
 
 % INSTANCIANDO AS LUZES DO ESPAÇO #########################################
 luzUm = Luz;
@@ -89,7 +122,7 @@ luzTres.corEspecular = [100,100,50];
 listaDeLuzes = [luzUm];
 
 % DECLARANDO ASPECTOS DA IMAGEM ###########################################
-nx = 100; ny = 100;                             % Resolução da Imagem
+nx = 200; ny = 200;                             % Resolução da Imagem
 left = -5; right = 5; top = 5; bottom = -5;     % Área da Imagem
 
 pontoDeVisaoE = [2 -2 3];                       % Ponto de Visão: 'e'
@@ -130,12 +163,12 @@ intensidadeDaCorDoAmbiente = 0.0005;
 fig = figure; hold on;
 multiplicadorAngulacao = 10;
 
-for angulo = 1 : 90 * multiplicadorAngulacao
+for angulo = 1 : 1
     % TENTATIVAS DE ROTACAO - TAKE 6 ##########################################
     % figure, hold on; 
     a = angulo / multiplicadorAngulacao; % 0.001; % em graus
     matrizDeRotacao = [[cos(a) -sin(a) 0]; [sin(a) cos(a) 0]; [0 0 1]];
-    matrizRUVW = pontoParaMatrizRUVW(cuboMagico.centro);
+    matrizRUVW = pontoParaMatrizRUVW(cuboUm.centro);
 
     for i=1: quantidadeDeObjetos
         % TEM Q SER PONTO POR PONTO DENTRO DOS PONTOS ###############
