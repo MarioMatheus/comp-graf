@@ -29,8 +29,8 @@ cuboUm = Cubo;
 cuboUm.lado = ladoCubo;
 cuboUm.centro = [-8 10 -15];
 
-cubos = [cuboUm]; % PRIMEIRO CUBO DO PLOT #################################
-centros = [ % CENTRO DE CUBOS ADICIONAIS ##################################
+cubos = [cuboUm];
+centros = [
     [-8 12 -15];%[-8 14 -15];
     [-10 10 -15];[-10 12 -15];%[-10 14 -15];
     %[-12 10 -15];[-12 12 -15];[-12 14 -15];
@@ -44,7 +44,6 @@ centros = [ % CENTRO DE CUBOS ADICIONAIS ##################################
     %[-12 10 -19];[-12 12 -19];[-12 14 -19];
 ];
 
-% COM BASE NOS CENTRO, CRIA-SE OS CUBOS ###################################
 for cubando = 1 : size(centros,1)
     cubo = Cubo;
     cubo.lado = ladoCubo;
@@ -143,7 +142,7 @@ intensidadeDaCorDoAmbiente = 0.0005;
 % transformadaDeEscala = [[cos(teta) -sin(teta)]; [sin(teta) cos(teta)]];
 % transformadaDeEscala = [[1 0];[0 1]];
 fig = figure; hold on;
-multiplicadorAngulacao = 5;
+multiplicadorAngulacao = 10;
 
 for angulo = 1 : 90
     % TENTATIVAS DE ROTACAO - TAKE 6 ##########################################
